@@ -124,6 +124,9 @@ Return Value:
 
     PAGED_CODE();
 
+    //设置设备访问方式为直接访问方式
+    WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoDirect);
+
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
 
     status = PCI954DriverCreateDevice(DeviceInit);

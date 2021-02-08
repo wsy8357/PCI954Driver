@@ -48,6 +48,9 @@ Return Value:
     WDFDEVICE device;
     NTSTATUS status;
 
+    //TODO
+    //PPCI_COMMON_CONFIG configInfo = NULL;
+
     PAGED_CODE();
 
     WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&deviceAttributes, DEVICE_CONTEXT);
