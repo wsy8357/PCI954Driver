@@ -119,6 +119,7 @@ Return Value:
 --*/
 {
     NTSTATUS status;
+    WDF_PNPPOWER_EVENT_CALLBACKS pnpPowerCallbacks;
 
     UNREFERENCED_PARAMETER(Driver);
 
@@ -128,6 +129,12 @@ Return Value:
     WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoDirect);
 
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
+
+    TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! ConfigPnpEvent");
+
+    WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
+
+    pnpPowerCallbacks.EvtDevicePrepareHardware = 
 
     status = PCI954DriverCreateDevice(DeviceInit);
 
