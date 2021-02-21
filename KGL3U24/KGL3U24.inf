@@ -1,0 +1,86 @@
+;
+; KGL3U24.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=NewPCI ; TODO: edit Class
+ClassGuid={93732ead-1daf-4d9b-bd91-b632480ad996} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=KGL3U24.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+KGL3U24_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+KGL3U24.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%KGL3U24.DeviceDesc%=KGL3U24_Device, PCI\VEN_10B5&DEV_9052&SUBSYS_905210B5&REV_02 ; TODO: edit hw-id
+
+[KGL3U24_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+KGL3U24.sys
+
+;-------------- Service installation
+[KGL3U24_Device.NT.Services]
+AddService = KGL3U24,%SPSVCINST_ASSOCSERVICE%, KGL3U24_Service_Inst
+
+; -------------- KGL3U24 driver install sections
+[KGL3U24_Service_Inst]
+DisplayName    = %KGL3U24.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\KGL3U24.sys
+
+;
+;--- KGL3U24_Device Coinstaller installation ------
+;
+
+[KGL3U24_Device.NT.CoInstallers]
+AddReg=KGL3U24_Device_CoInstaller_AddReg
+CopyFiles=KGL3U24_Device_CoInstaller_CopyFiles
+
+[KGL3U24_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[KGL3U24_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[KGL3U24_Device.NT.Wdf]
+KmdfService =  KGL3U24, KGL3U24_wdfsect
+[KGL3U24_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="HT8357" ;TODO: Replace with your manufacturer name
+ClassName="kgl Driver 2.0" ; TODO: edit ClassName
+DiskName = "KGL3U24 Installation Disk"
+KGL3U24.DeviceDesc = "KGL3U24 Device"
+KGL3U24.SVCDESC = "KGL3U24 Service"

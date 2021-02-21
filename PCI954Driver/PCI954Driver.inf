@@ -8,7 +8,7 @@ Class=NewPCI ; TODO: edit Class
 ClassGuid={ff646f80-8def-11d2-9449-00105a075f6c} ;njh20080118  --  njh20081110:use the old num
 Provider=%ManufacturerName%
 CatalogFile=PCI954Driver.cat
-DriverVer=02/01/2021,6.00.0001 ; TODO: set DriverVer in stampinf property pages
+DriverVer= ; TODO: set DriverVer in stampinf property pages
 
 [DestinationDirs]
 DefaultDestDir = 12
@@ -38,7 +38,7 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with
 %ManufacturerName%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
-%PCI954Driver.DeviceDesc%=PCI954Driver_Device, Root\PCI954Driver ; TODO: edit hw-id
+%PCI954Driver.DeviceDesc%=PCI954Driver_Device, PCI\VEN_10B5&DEV_9052&SUBSYS_905210B5&DEV_02 ; 使用从Win7 x64系统中检索到的PCI 硬件ID
 
 [PCI954Driver_Device.NT]
 CopyFiles=Drivers_Dir
@@ -80,7 +80,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
-ClassName="PCI954 Drivers 2.0" ; TODO: edit ClassName
+ClassName="KGL Drivers 2.0" ; TODO: edit ClassName
 DiskName = "PCI954Driver Installation Disk"
 PCI954Driver.DeviceDesc = "PCI954Driver Device"
 PCI954Driver.SVCDESC = "PCI954Driver Service"
