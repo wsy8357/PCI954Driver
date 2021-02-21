@@ -1,0 +1,19 @@
+
+可以查阅 https://docs.microsoft.com/zh-cn/windows-hardware/drivers/wdf/wdm-irps-and-kmdf-event-callback-functions#kmdf-callbacks-for-irp_mj_pnp
+
+主要IRP代码						WDF事件回调函数
+IRP_MJ_CREATE					EvtDeviceFileCreate 或 EvtIoDefault
+
+IRP_MJ_CLOSE					EvtFileClose
+
+IRP_MJ_DEVICE_CONTROL			EvtIoDeviceControl或EvtIoDefault
+
+IRP_MN_START_DEVICE				EvtDevicePrepareHardware 或 EvtDeviceD0Entry
+
+IRP_MN_QUERY_STOP_DEVICE		EvtDeviceQueryStop
+
+IRP_MN_QUERY_REMOVE_DEVICE		EvtDeviceQueryRemove
+
+IRP_MN_SURPRISE_REMOVAL			EvtDeviceReleaseHardware EvtIoStop
+
+IRP_MN_REMOVE_DEVICE			EvtDeviceReleaseHardware EvtIoStop

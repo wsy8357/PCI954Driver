@@ -18,6 +18,16 @@ Environment:
 
 EXTERN_C_START
 
+//Windows NT内核下操作系统使用的设备文件名称
+#define GPD_DEVICE_NAME L"\\Device\\3U24"
+
+//windows Dos内核下使用的设备文件名
+#define DOS_DEVICE_NAME L"\\DDosDevices\\3U24Dev"
+
+//定义设备使用的PCI设备的ID
+#define PCI_954_VID 0x10B5
+#define PCI_954_DID 0x9052
+
 //
 // The device context performs the same job as
 // a WDM device extension in the driver frameworks
@@ -25,6 +35,19 @@ EXTERN_C_START
 typedef struct _DEVICE_CONTEXT
 {
     ULONG PrivateDeviceData;  // just a placeholder
+
+    PVOID PortBase;         //base port address pointer
+    ULONG PortCount;        //Count of I/O address used
+    ULONG PortMemoryType;   //HalTranslateBusAddress MemoryType
+    PDEVICE_OBJECT  DeviceObject;   //The Gpd device Object
+    PDEVICE_OBJECT  NextLowerDriver;    //The Top of stack
+    BOOLEAN         Started;
+    BOOLEAN         Removed;
+    BOOLEAN         PortWasMapped;      //If true, we have to unmap on unload
+    BOOLEAN         Filler[1];          //bug fix
+    IO_REMOVE_LOCK  RemoveLock;
+
+
 
 } DEVICE_CONTEXT, *PDEVICE_CONTEXT;
 
