@@ -21,6 +21,8 @@ Environment:
 #pragma alloc_text (INIT, DriverEntry)
 #pragma alloc_text (PAGE, PCI954DriverEvtDeviceAdd)
 #pragma alloc_text (PAGE, PCI954DriverEvtDriverContextCleanup)
+#pragma alloc_text (PAGE, KGL3U24EvtDevicePrepareHardware)
+#pragma alloc_text (PAGE, KGL3U24EvtDeviceReleaseHardware)
 #endif
 
 NTSTATUS

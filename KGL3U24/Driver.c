@@ -21,6 +21,9 @@ Environment:
 #pragma alloc_text (INIT, DriverEntry)
 #pragma alloc_text (PAGE, KGL3U24EvtDeviceAdd)
 #pragma alloc_text (PAGE, KGL3U24EvtDriverContextCleanup)
+
+#pragma alloc_text (PAGE, KGL3U24EvtDevicePrepareHardware)
+#pragma alloc_text (PAGE, KGL3U24EvtDeviceReleaseHardware)
 #endif
 
 NTSTATUS
@@ -119,6 +122,7 @@ Return Value:
 --*/
 {
     NTSTATUS status;
+    WDF_PNPPOWER_EVENT_CALLBACKS pnpPowerCallbacks;
 
     UNREFERENCED_PARAMETER(Driver);
 
@@ -126,7 +130,23 @@ Return Value:
 
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
 
+    WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoBuffered);
+
+    //初始化PNP事件回调结构体
+    WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
+
+    pnpPowerCallbacks.EvtDevicePrepareHardware = KGL3U24EvtDevicePrepareHardware;
+
+    //在设备初始化结构体中，设置pnp事件回调结构体
+    WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &pnpPowerCallbacks);
+
     status = KGL3U24CreateDevice(DeviceInit);
+
+    if (!NT_SUCCESS(status))
+    {
+        TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+            "   KGL3U24CreateDevice filed %!STATUS!", status);
+    }
 
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Exit");
 
@@ -162,4 +182,74 @@ Return Value:
     // Stop WPP Tracing
     //
     WPP_CLEANUP(WdfDriverWdmGetDriverObject((WDFDRIVER)DriverObject));
+}
+
+NTSTATUS
+KGL3U24EvtDevicePrepareHardware(
+    _In_
+    WDFDEVICE Device,
+    _In_
+    WDFCMRESLIST ResourcesRaw,
+    _In_
+    WDFCMRESLIST ResourcesTranslated
+)
+{
+    NTSTATUS            status = STATUS_SUCCESS;
+    PDEVICE_CONTEXT     devExt;
+
+    //便利资源使用到的变量
+    PCM_PARTIAL_RESOURCE_DESCRIPTOR desc=NULL;
+    PHYSICAL_ADDRESS                portStartAddress;
+    ULONG                           portLength;
+
+    UNREFERENCED_PARAMETER(ResourcesRaw);
+
+    PAGED_CODE();
+
+    TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+        " --> KGL3U24EvtDevicePrepareHardware Entry");
+
+    //获取设备句柄维护的设别信息结构体， 该结构体有设备供应商定义
+    devExt = DeviceGetContext(Device);
+
+    //获取PCI配置内容，对地址进行转换映射
+    //便利资源列表，保存资源信息
+    for (int i = 0; i < WdfCmResourceListGetCount(ResourcesTranslated); i++)
+    {
+        desc = WdfCmResourceListGetDescriptor(ResourcesTranslated, i);
+
+        if (!desc)
+        {
+            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER,
+                " WdfResourceCmGetDescriptor failed");
+
+            //返回设备配置时错误
+            return STATUS_DEVICE_CONFIGURATION_ERROR;
+        }
+
+        switch (desc->Type)
+        {
+            //如果资源类型为端口
+        case CmResourceTypePort:
+        {
+
+            //在操作 I/O space 时，应当使用 READ_PORT_Xxx 或 WRITE_PORT_Xxx来对端口进行读写操作
+            portStartAddress.HighPart = 0;
+            portStartAddress.LowPart = desc->u.Port.Start.LowPart;
+            portLength = desc->u.Port.Length;
+
+            DbgPrint("\t\t add: port I/O starting at 0x%x length 0x%x\n",
+                portStartAddress.LowPart,
+                portLength);
+        }
+            break;
+        default:
+            break;
+        }
+    }
+
+    TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+        " --> KGL3U24EvtDevicePrepareHardware Exit");
+
+    return status;
 }
