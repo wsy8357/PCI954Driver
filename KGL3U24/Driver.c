@@ -214,7 +214,7 @@ KGL3U24EvtDevicePrepareHardware(
 
     //获取PCI配置内容，对地址进行转换映射
     //便利资源列表，保存资源信息
-    for (int i = 0; i < WdfCmResourceListGetCount(ResourcesTranslated); i++)
+    for (ULONG i = 0; i < WdfCmResourceListGetCount(ResourcesTranslated); i++)
     {
         desc = WdfCmResourceListGetDescriptor(ResourcesTranslated, i);
 

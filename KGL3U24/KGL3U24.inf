@@ -8,6 +8,7 @@ Class=NewPCI ; TODO: edit Class
 ClassGuid={93732ead-1daf-4d9b-bd91-b632480ad996} ; TODO: edit ClassGuid
 Provider=%ManufacturerName%
 CatalogFile=KGL3U24.cat
+PnpLockdown=1
 DriverVer= ; TODO: set DriverVer in stampinf property pages
 
 [DestinationDirs]

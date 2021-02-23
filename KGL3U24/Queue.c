@@ -15,6 +15,7 @@ Environment:
 --*/
 
 #include "driver.h"
+#include "deviceCtrl.h"
 #include "queue.tmh"
 
 #ifdef ALLOC_PRAGMA
@@ -113,12 +114,57 @@ Return Value:
 
 --*/
 {
+    UNREFERENCED_PARAMETER(OutputBufferLength);
+
+    WDFDEVICE device;
+    PVOID buffer;
+    size_t length;
+    NTSTATUS status = STATUS_SUCCESS;
+
     TraceEvents(TRACE_LEVEL_INFORMATION, 
                 TRACE_QUEUE, 
                 "%!FUNC! Queue 0x%p, Request 0x%p OutputBufferLength %d InputBufferLength %d IoControlCode %d", 
                 Queue, Request, (int) OutputBufferLength, (int) InputBufferLength, IoControlCode);
 
-    WdfRequestComplete(Request, STATUS_SUCCESS);
+    //获取 IO Ctrl Code 根据不同的控制代码进行处理
+    switch (IoControlCode)
+    {
+        //处理 开关量输出控制
+    case IOCTRL_GPD_WRITE_SWITCH:
+    {
+        //当输入缓存区的有效长度小于2时，则代表传入的IRP参数有问题
+        if (InputBufferLength < 2)
+        {
+            WdfRequestComplete(Request, STATUS_INVALID_PARAMETER);
+            break;
+        }
+
+        status = WdfRequestRetrieveInputBuffer(Request, 2, &buffer, &length);
+
+        if (!NT_SUCCESS(status))
+        {
+            WdfRequestComplete(Request, STATUS_UNSUCCESSFUL);
+        }
+
+        device = WdfIoQueueGetDevice(Queue);
+
+        status = WriteSwitch(device, buffer, length);
+
+        if (NT_SUCCESS(status))
+        {
+            WdfRequestComplete(Request, STATUS_SUCCESS);
+        }
+        else
+        {
+            WdfRequestComplete(Request, STATUS_UNSUCCESSFUL);
+        }
+        break;
+    }
+    default:
+
+        WdfRequestCompleteWithInformation(Request, STATUS_INVALID_DEVICE_REQUEST, 0);
+        break;
+    }
 
     return;
 }
