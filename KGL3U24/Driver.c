@@ -24,6 +24,9 @@ Environment:
 
 #pragma alloc_text (PAGE, KGL3U24EvtDevicePrepareHardware)
 #pragma alloc_text (PAGE, KGL3U24EvtDeviceReleaseHardware)
+
+#pragma alloc_text (PAGE, KGL3U24EvtDeviceD0Entry)
+#pragma alloc_text (PAGE, KGL3U24EvtDeviceD0Exit)
 #endif
 
 NTSTATUS
@@ -136,6 +139,10 @@ Return Value:
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
 
     pnpPowerCallbacks.EvtDevicePrepareHardware = KGL3U24EvtDevicePrepareHardware;
+    pnpPowerCallbacks.EvtDeviceReleaseHardware = KGL3U24EvtDeviceReleaseHardware;
+
+    pnpPowerCallbacks.EvtDeviceD0Entry = KGL3U24EvtDeviceD0Entry;
+    pnpPowerCallbacks.EvtDeviceD0Exit = KGL3U24EvtDeviceD0Exit;
 
     //在设备初始化结构体中，设置pnp事件回调结构体
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &pnpPowerCallbacks);
@@ -234,6 +241,7 @@ KGL3U24EvtDevicePrepareHardware(
         {
 
             //在操作 I/O space 时，应当使用 READ_PORT_Xxx 或 WRITE_PORT_Xxx来对端口进行读写操作
+            //根据文档描述 这里的地址和长度已经是系统转换好的，并不是PCI总线配置的物理IO端口
             portStartAddress.HighPart = 0;
             portStartAddress.LowPart = desc->u.Port.Start.LowPart;
             portLength = desc->u.Port.Length;
@@ -252,4 +260,68 @@ KGL3U24EvtDevicePrepareHardware(
         " --> KGL3U24EvtDevicePrepareHardware Exit");
 
     return status;
+}
+
+NTSTATUS KGL3U24EvtDeviceReleaseHardware
+(
+    WDFDEVICE Device,
+    WDFCMRESLIST ResourcesTranslated
+)
+{
+    PDEVICE_CONTEXT     devExt;
+
+    UNREFERENCED_PARAMETER(ResourcesTranslated);
+
+    PAGED_CODE();
+
+    //获取设备句柄维护的设别信息结构体， 该结构体有设备供应商定义
+    devExt = DeviceGetContext(Device);
+
+    devExt->PortBase = 0;
+    devExt->PortCount = 0;
+
+    return STATUS_SUCCESS;
+}
+
+/*
+* 当设备电源管理进入活动状态 D0时的事件函数
+*/
+NTSTATUS KGL3U24EvtDeviceD0Entry
+(
+    WDFDEVICE Device,
+    WDF_POWER_DEVICE_STATE PreviousState
+)
+{
+    PDEVICE_CONTEXT devExt;
+
+    UNREFERENCED_PARAMETER(PreviousState);
+
+    PAGED_CODE();
+
+    devExt = DeviceGetContext(Device);
+
+    devExt->Started = TRUE;
+    devExt->Removed = FALSE;
+
+    return STATUS_SUCCESS;
+}
+
+NTSTATUS KGL3U24EvtDeviceD0Exit
+(
+    WDFDEVICE Device,
+    WDF_POWER_DEVICE_STATE PreviousState
+)
+{
+    PDEVICE_CONTEXT devExt;
+
+    UNREFERENCED_PARAMETER(PreviousState);
+
+    PAGED_CODE();
+
+    devExt = DeviceGetContext(Device);
+
+    devExt->Started = FALSE;
+    devExt->Removed = TRUE;
+
+    return STATUS_SUCCESS;
 }
