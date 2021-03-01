@@ -2,6 +2,9 @@
 #include <ntddk.h>
 #include <wdf.h>
 
+#include "trace.h"
+EXTERN_C_START
+
 /**
 * 用于处理 PCI板卡上的开关量输出
 * 
@@ -14,6 +17,8 @@
 NTSTATUS
 WriteSwitch(
 	_In_ WDFDEVICE deviceObject,
-	_Inout_ PVOID buffer,
+	_In_ PVOID buffer,
 	_In_	size_t len
 );
+
+EXTERN_C_END
