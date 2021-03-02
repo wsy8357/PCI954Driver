@@ -81,7 +81,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="HT8357" ;TODO: Replace with your manufacturer name
-ClassName="kgl Driver 2.0" ; TODO: edit ClassName
+ClassName="Switch" ; TODO: edit ClassName
 DiskName = "KGL3U24 Installation Disk"
 KGL3U24.DeviceDesc = "KGL3U24 Device"
 KGL3U24.SVCDESC = "KGL3U24 Service"

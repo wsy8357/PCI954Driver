@@ -239,6 +239,8 @@ KGL3U24EvtDevicePrepareHardware(
             //如果资源类型为端口
         case CmResourceTypePort:
         {
+            DbgBreakPoint();
+
 
             //在操作 I/O space 时，应当使用 READ_PORT_Xxx 或 WRITE_PORT_Xxx来对端口进行读写操作
             //根据文档描述 这里的地址和长度已经是系统转换好的，并不是PCI总线配置的物理IO端口
