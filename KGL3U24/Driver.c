@@ -245,9 +245,15 @@ KGL3U24EvtDevicePrepareHardware(
             portStartAddress.LowPart = desc->u.Port.Start.LowPart;
             portLength = desc->u.Port.Length;
 
-            DbgPrint("\t\t add: port I/O starting at 0x%x length 0x%x\n",
+            TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+                "Add: prot I/O starting at 0x%X length 0x%x",
                 portStartAddress.LowPart,
                 portLength);
+
+            devExt->PortBase = portStartAddress.LowPart;
+            devExt->PortCount = portLength;
+
+            devExt->findPortSpace = TRUE;
         }
             break;
         default:

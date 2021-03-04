@@ -36,7 +36,8 @@ typedef struct _DEVICE_CONTEXT
 {
     ULONG PrivateDeviceData;  // just a placeholder
 
-    PVOID PortBase;         //base port address pointer
+    BOOLEAN findPortSpace;  //the true for found a I/O port Space
+    ULONG PortBase;         //base port address pointer
     ULONG PortCount;        //Count of I/O address used
     ULONG PortMemoryType;   //HalTranslateBusAddress MemoryType
     PDEVICE_OBJECT  DeviceObject;   //The Gpd device Object

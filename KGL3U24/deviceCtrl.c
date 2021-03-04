@@ -26,6 +26,13 @@ WriteSwitch(
 		return STATUS_GHOSTED;
 	}
 
+	if (FALSE == device_info->findPortSpace)
+	{
+		TraceEvents(TRACE_LEVEL_WARNING, TRACE_DEVICECTRL, "%!FUNC! driver unfound Port Space!");
+
+		return STATUS_UNSUCCESSFUL;
+	}
+
 	data1 = *((PUCHAR)buffer);
 	data2 = *((PUCHAR)buffer+1);
 
