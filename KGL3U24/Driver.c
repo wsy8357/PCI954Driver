@@ -284,6 +284,7 @@ NTSTATUS KGL3U24EvtDeviceReleaseHardware
 
     devExt->PortBase = 0;
     devExt->PortCount = 0;
+    devExt->findPortSpace = FALSE;
 
     return STATUS_SUCCESS;
 }
