@@ -24,9 +24,13 @@ EXTERN_C_START
 //windows Dos内核下使用的设备文件名
 #define DOS_DEVICE_NAME L"\\DDosDevices\\3U24Dev"
 
+#define DEVICE_NAME L"3U24Dev"
+
 //定义设备使用的PCI设备的ID
 #define PCI_954_VID 0x10B5
 #define PCI_954_DID 0x9052
+
+#define IO_PORT_LENGTH 0x1000
 
 //
 // The device context performs the same job as

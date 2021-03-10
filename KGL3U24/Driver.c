@@ -246,14 +246,19 @@ KGL3U24EvtDevicePrepareHardware(
             portLength = desc->u.Port.Length;
 
             TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
-                "Add: prot I/O starting at 0x%X length 0x%x",
+                "Add: prot I/O starting at 0x%X length 0x%X",
                 portStartAddress.LowPart,
                 portLength);
+            if (portLength == IO_PORT_LENGTH)
+            {
+                devExt->PortBase = portStartAddress.LowPart;
+                devExt->PortCount = portLength;
 
-            devExt->PortBase = portStartAddress.LowPart;
-            devExt->PortCount = portLength;
+                devExt->findPortSpace = TRUE;
 
-            devExt->findPortSpace = TRUE;
+                TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+                    "Suched a I/O Port Address Address = 0x%X, Length = 0x%X", devExt->PortBase, devExt->PortCount);
+            }
         }
             break;
         default:
@@ -304,10 +309,16 @@ NTSTATUS KGL3U24EvtDeviceD0Entry
 
     PAGED_CODE();
 
+    TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+        " --> KGL3U24EvtDeviceD0Entry Entry");
+
     devExt = DeviceGetContext(Device);
 
     devExt->Started = TRUE;
     devExt->Removed = FALSE;
+
+    TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER,
+        " --> KGL3U24EvtDeviceD0Entry Exit");
 
     return STATUS_SUCCESS;
 }

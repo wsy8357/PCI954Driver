@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGL3U24", "KGL3U24\KGL3U24.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGL3U34InstallPackage", "KGL3U34InstallPackage\KGL3U34InstallPackage.vcxproj", "{B902B125-5CE0-4A03-8A3A-BF03473CE025}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGL3U24Test", "KGL3U24Test\KGL3U24Test.vcxproj", "{975C89A1-CFBA-4479-A96D-CB35659D915D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -67,6 +69,18 @@ Global
 		{B902B125-5CE0-4A03-8A3A-BF03473CE025}.Release|x86.ActiveCfg = Release|Win32
 		{B902B125-5CE0-4A03-8A3A-BF03473CE025}.Release|x86.Build.0 = Release|Win32
 		{B902B125-5CE0-4A03-8A3A-BF03473CE025}.Release|x86.Deploy.0 = Release|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|ARM.ActiveCfg = Debug|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|x64.ActiveCfg = Debug|x64
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|x64.Build.0 = Debug|x64
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|x86.ActiveCfg = Debug|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Debug|x86.Build.0 = Debug|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|ARM.ActiveCfg = Release|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|ARM64.ActiveCfg = Release|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|x64.ActiveCfg = Release|x64
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|x64.Build.0 = Release|x64
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|x86.ActiveCfg = Release|Win32
+		{975C89A1-CFBA-4479-A96D-CB35659D915D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

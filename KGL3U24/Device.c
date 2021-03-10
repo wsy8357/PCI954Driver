@@ -15,6 +15,7 @@ Environment:
 --*/
 
 #include "driver.h"
+#include <ntstrsafe.h>
 #include "device.tmh"
 
 #ifdef ALLOC_PRAGMA
@@ -47,6 +48,8 @@ Return Value:
     PDEVICE_CONTEXT deviceContext;
     WDFDEVICE device;
     NTSTATUS status;
+    //UNICODE_STRING deviceName;
+    //DECLARE_CONST_UNICODE_STRING(dosDeviceName, DOS_DEVICE_NAME);
 
     PAGED_CODE();
 
@@ -70,7 +73,7 @@ Return Value:
         // Initialize the context.
         //
         deviceContext->PrivateDeviceData = 0;
-
+        //RtlUnicodeStringInit(&deviceName, DEVICE_NAME);
         //
         // Create a device interface so that applications can find and talk
         // to us.
@@ -78,7 +81,7 @@ Return Value:
         status = WdfDeviceCreateDeviceInterface(
             device,
             &GUID_DEVINTERFACE_KGL3U24,
-            NULL // ReferenceString
+            NULL//&deviceName//&dosDeviceName // ReferenceString
             );
 
         if (NT_SUCCESS(status)) {
@@ -86,7 +89,37 @@ Return Value:
             // Initialize the I/O Package and any Queues
             //
             status = KGL3U24QueueInitialize(device);
+            WDFSTRING string;
+            NTSTATUS inlineStatus = STATUS_SUCCESS;
+
+            WdfStringCreate(NULL, WDF_NO_OBJECT_ATTRIBUTES, &string);
+            inlineStatus=WdfDeviceRetrieveDeviceName(device, string);
+            if (NT_SUCCESS(inlineStatus))
+            {
+                UNICODE_STRING name;
+
+                WdfStringGetUnicodeString(string, &name);
+
+                TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DEVICE,
+                    "Wdf Device Name: %wZ", &name);
+            }
+            else
+            {
+                TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
+                    "GetDevice Name Error Code = %#X", inlineStatus);
+            }
+
         }
+
+       // status = WdfDeviceCreateSymbolicLink(device, &dosDeviceName);
+        /*
+        if (!NT_SUCCESS(status))
+        {
+            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
+                "Wdf Device Create Symboloc Link Error!");
+
+        }
+        */
     }
 
     return status;
