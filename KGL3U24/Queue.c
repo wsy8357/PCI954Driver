@@ -132,9 +132,15 @@ Return Value:
         //处理 开关量输出控制
     case IOCTRL_GPD_WRITE_SWITCH:
     {
+        TraceEvents(TRACE_LEVEL_INFORMATION,
+            TRACE_QUEUE,
+            "%!FUNC! Write Switch Entry");
         //当输入缓存区的有效长度小于2时，则代表传入的IRP参数有问题
         if (InputBufferLength < 2)
         {
+            TraceEvents(TRACE_LEVEL_WARNING,
+                TRACE_QUEUE,
+                "%!FUNC! Input buffer length small then 2");
             WdfRequestComplete(Request, STATUS_INVALID_PARAMETER);
             break;
         }
@@ -152,10 +158,16 @@ Return Value:
 
         if (NT_SUCCESS(status))
         {
+            TraceEvents(TRACE_LEVEL_INFORMATION,
+                TRACE_QUEUE,
+                "%!FUNC! Write Switch SUCCESS exit");
             WdfRequestComplete(Request, STATUS_SUCCESS);
         }
         else
         {
+            TraceEvents(TRACE_LEVEL_WARNING,
+                TRACE_QUEUE,
+                "%!FUNC! Write Switch SUCCESS exit");
             WdfRequestComplete(Request, STATUS_UNSUCCESSFUL);
         }
         break;

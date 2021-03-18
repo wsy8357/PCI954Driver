@@ -48,8 +48,11 @@ Return Value:
     PDEVICE_CONTEXT deviceContext;
     WDFDEVICE device;
     NTSTATUS status;
-    //UNICODE_STRING deviceName;
-    //DECLARE_CONST_UNICODE_STRING(dosDeviceName, DOS_DEVICE_NAME);
+    NTSTATUS status_ci;
+    NTSTATUS status_cu;
+    NTSTATUS inlineStatus = STATUS_SUCCESS;
+    UNICODE_STRING deviceName;
+    WDFSTRING string;
 
     PAGED_CODE();
 
@@ -78,48 +81,71 @@ Return Value:
         // Create a device interface so that applications can find and talk
         // to us.
         //
-        status = WdfDeviceCreateDeviceInterface(
+        status_ci = WdfDeviceCreateDeviceInterface(
             device,
             &GUID_DEVINTERFACE_KGL3U24,
-            NULL//&deviceName//&dosDeviceName // ReferenceString
+            NULL // ReferenceString
             );
 
-        if (NT_SUCCESS(status)) {
+        if (!NT_SUCCESS(status_ci))
+        {
+            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
+                "%!FUNC! Failed to Create Device Interface (%#X)", status_ci);
+
+            return status_ci;
+        }
+
+        WdfStringCreate(NULL, WDF_NO_OBJECT_ATTRIBUTES, &string);
+        inlineStatus = WdfDeviceRetrieveDeviceName(device, string);
+        if (NT_SUCCESS(inlineStatus))
+        {
+            UNICODE_STRING name;
+
+            WdfStringGetUnicodeString(string, &name);
+
+            TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DEVICE,
+                "%!FUNC! Wdf Device Name: %wZ", &name);
+        }
+        else
+        {
+            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
+                "%!FUNC! GetDevice Name Error Code = %#X", inlineStatus);
+
+            return inlineStatus;
+        }
+
+
+        RtlInitUnicodeString(&deviceName, DOS_DEVICE_NAME);
+
+        status_cu = WdfDeviceCreateSymbolicLink(device, &deviceName);
+
+        if (!NT_SUCCESS(status_cu))
+        {
+            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
+                "%!FUNC! Wdf Device Create Symboloc Link Error! Code = %#X", status_cu);
+            return status_cu;
+        }
+        else
+        {
+            TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DEVICE,
+                "%!FUNC! Wdf Device Create Symboloc Link OK Name: %wZ!", &deviceName);
+        }
+
+        if (NT_SUCCESS(status_ci) && NT_SUCCESS(status_cu)) {
             //
             // Initialize the I/O Package and any Queues
             //
             status = KGL3U24QueueInitialize(device);
-            WDFSTRING string;
-            NTSTATUS inlineStatus = STATUS_SUCCESS;
 
-            WdfStringCreate(NULL, WDF_NO_OBJECT_ATTRIBUTES, &string);
-            inlineStatus=WdfDeviceRetrieveDeviceName(device, string);
-            if (NT_SUCCESS(inlineStatus))
-            {
-                UNICODE_STRING name;
-
-                WdfStringGetUnicodeString(string, &name);
-
-                TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DEVICE,
-                    "Wdf Device Name: %wZ", &name);
-            }
-            else
+            if (!NT_SUCCESS(status))
             {
                 TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
-                    "GetDevice Name Error Code = %#X", inlineStatus);
+                    "Filed to KGL3U24QueueInitialize Code=%#X", status);
+
+                return status;
             }
-
         }
 
-       // status = WdfDeviceCreateSymbolicLink(device, &dosDeviceName);
-        /*
-        if (!NT_SUCCESS(status))
-        {
-            TraceEvents(TRACE_LEVEL_ERROR, TRACE_DEVICE,
-                "Wdf Device Create Symboloc Link Error!");
-
-        }
-        */
     }
 
     return status;

@@ -125,6 +125,7 @@ Return Value:
 --*/
 {
     NTSTATUS status;
+    UNICODE_STRING ustring;
     WDF_PNPPOWER_EVENT_CALLBACKS pnpPowerCallbacks;
 
     UNREFERENCED_PARAMETER(Driver);
@@ -132,6 +133,15 @@ Return Value:
     PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
+
+    RtlInitUnicodeString(&ustring, GPD_DEVICE_NAME);
+
+    status = (WdfDeviceInitAssignName(DeviceInit, &ustring));
+
+    if (!NT_SUCCESS(status))
+    {
+        TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "%!FUNC! Error Config AssignName!");
+    }
 
     WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoBuffered);
 
