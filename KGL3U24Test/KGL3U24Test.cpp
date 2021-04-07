@@ -46,30 +46,73 @@ int main()
 
     SWITCH_WRITE_DATA swi;
 
-    swi.data1 = 0xFE;
+    swi.data1 = 0xFF;
     swi.data2 = 0xFF;
 
-    printf("打开通道1\r\n");
-
-    deviceResult = DeviceIoControl(hDevice,
-        IOCTRL_GPD_WRITE_SWITCH,
-        &swi,
-        sizeof(SWITCH_WRITE_DATA),
-        NULL,
-        0,
-        &ReturnedLength,
-        NULL);
-
-    if (deviceResult == TRUE)
+    while (1)
     {
-        printf("打开成功\r\n");
-    }
-    else
-    {
-        printf("打开失败\r\n");
-    }
+        printf("请输入要控制的通道(1~16) 和 控制指令（0为关闭，1为接通）:");
 
-    system("Pause");
+        int index, param;
+
+        uint8_t* p_data = NULL;
+
+        scanf_s("%d", &index);
+
+        if (index == 0)
+        {
+            printf("退出程序\r\n");
+            break;
+        }
+
+        scanf_s("%d", &param);
+
+        if (index - 8 <= 0)
+        {
+            p_data = &swi.data1;
+        }
+        else
+        {
+            p_data = &swi.data2;
+        }
+
+        if (p_data == NULL)
+        {
+            continue;
+        }
+
+        switch (param)
+        {
+        case 0:
+            *p_data |= ((UINT8)1) << ((index - 1) % 8);
+            printf("关闭通道%d\r\n", index);
+            break;
+        case 1:
+            *p_data &= ~(((UINT8)1) << ((index - 1) % 8));
+            printf("打开通道%d\r\n", index);
+            break;
+        default:
+            break;
+        }
+
+        deviceResult = DeviceIoControl(hDevice,
+            IOCTRL_GPD_WRITE_SWITCH,
+            &swi,
+            sizeof(SWITCH_WRITE_DATA),
+            NULL,
+            0,
+            &ReturnedLength,
+            NULL);
+
+        if (deviceResult == TRUE)
+        {
+            printf("打开成功\r\n");
+        }
+        else
+        {
+            printf("打开失败\r\n");
+        }
+    }
 
     if (!CloseDevice())
     {
@@ -89,16 +132,19 @@ bool OpenDevice()
 
     //PCHAR DevicePath;
     BOOL status = TRUE;
-
+    /*
     if (pDeviceInterfaceDetail == NULL) {
         status = GetDevicePath();
     }
     if (pDeviceInterfaceDetail == NULL) {
         status = FALSE;
     }
+    */
 
     if (status) {
-        hDevice = CreateFile(pDeviceInterfaceDetail->DevicePath,
+        hDevice = CreateFile(
+            USER_DEVICE_NAME,
+            //pDeviceInterfaceDetail->DevicePath,
             GENERIC_READ | GENERIC_WRITE,
             0,
             NULL,
@@ -110,7 +156,7 @@ bool OpenDevice()
 
     if (hDevice == INVALID_HANDLE_VALUE) {
         status = FALSE;
-        printf("CreateFile failed.  Error:%u", GetLastError());
+        printf("CreateFile failed.  Error:%u\r\n", GetLastError());
     }
 
     return status;
@@ -186,7 +232,7 @@ bool GetDevicePath()
 
         if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
         {
-            printf("SetupDiGetDeviceInterfaceDetail failed, Error: %u", GetLastError());
+            printf("SetupDiGetDeviceInterfaceDetail failed, Error: %u\n", GetLastError());
             return FALSE;
         }
 
@@ -210,7 +256,7 @@ bool GetDevicePath()
         free(pDeviceInterfaceDetail);
 
         if (!status) {
-            printf("SetupDiGetDeviceInterfaceDetail failed, Error: %u", GetLastError());
+            printf("SetupDiGetDeviceInterfaceDetail failed, Error: %u\n", GetLastError());
             return status;
         }
 
@@ -223,7 +269,7 @@ bool GetDevicePath()
             &size);
 
         if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
-            printf("SetupDiGetDeviceRegistryProperty failed, Error: %u", GetLastError());
+            printf("SetupDiGetDeviceRegistryProperty failed, Error: %u\n", GetLastError());
             return FALSE;
         }
 
@@ -243,7 +289,7 @@ bool GetDevicePath()
             size,
             NULL);
         if (!status) {
-            printf("SetupDiGetDeviceRegistryProperty failed, Error: %u",
+            printf("SetupDiGetDeviceRegistryProperty failed, Error: %u\n",
                 GetLastError());
             free(DeviceName);
             return status;
