@@ -8,6 +8,6 @@ namespace LibKGL3U24
 {
     public class KGL3U24
     {
-
+        
     }
 }
