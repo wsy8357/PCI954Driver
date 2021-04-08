@@ -4,7 +4,7 @@
 #include <Public.h>
 
 
-HANDLE kgl3u24_open()
+HANDLE __stdcall Kgl3u24Open()
 {
 	HANDLE hDevice = CreateFile(USER_DEVICE_NAME,
 		GENERIC_READ | GENERIC_WRITE,
@@ -14,11 +14,16 @@ HANDLE kgl3u24_open()
 		0,
 		NULL);
 
+	if (hDevice == INVALID_HANDLE_VALUE)
+	{
+		hDevice = NULL;
+	}
+
 
 	return hDevice;
 }
 
-BOOL kgl3u24_close(HANDLE deviceHandle)
+BOOL __stdcall Kgl3u24Close(HANDLE deviceHandle)
 {
 	if (deviceHandle == INVALID_HANDLE_VALUE || deviceHandle == NULL)
 	{
@@ -34,7 +39,7 @@ BOOL kgl3u24_close(HANDLE deviceHandle)
 	return FALSE;
 }
 
-BOOL kgl3u24_output_set(HANDLE deviceHandle, UINT16 param)
+BOOL __stdcall Kgl3u24OutputSet(HANDLE deviceHandle, UINT16 param)
 {
 	SWITCH_WRITE_DATA swi;
 	BOOL deviceCtlResult = FALSE;
