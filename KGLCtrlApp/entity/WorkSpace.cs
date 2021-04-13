@@ -18,8 +18,8 @@ namespace KGLCtrlApp.entity
     [Serializable]
     public class Channel
     {
-        int Id { get; set; }
-        string Name { get; set; }
-        bool Enable { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool Enable { get; set; }
     }
 }

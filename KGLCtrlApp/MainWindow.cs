@@ -1,8 +1,10 @@
-﻿using KGLCtrlApp.userControler;
+﻿using KGLCtrlApp.entity;
+using KGLCtrlApp.userControler;
 using KGLCtrlApp.utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -15,21 +17,63 @@ namespace KGLCtrlApp
     public partial class MainWindow : Form
     {
         private List<SwitchCtrl> switchCtrls;
+        private WorkSpace workSpace;
         public MainWindow()
         {
             InitializeComponent();
             switchCtrls = new List<SwitchCtrl>();
+            InitLastWorkSpace();
             drawSwitchCtrlUI();
         }
 
         private void LoadWorkSpaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
+            openFileDialog.Filter = "xml files (*.xml)|*.xml";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+
+            if(openFileDialog.ShowDialog()==DialogResult.OK)
+            {
+                string filePath;
+                WorkSpace tempWorkSpace;
+                filePath = openFileDialog.FileName;
+
+                ConfigWorkSpaceUtils configWorkSpaceUtils = new ConfigWorkSpaceUtils();
+                tempWorkSpace = configWorkSpaceUtils.LoadWorkSpaceFromFile(filePath);
+
+                if(tempWorkSpace!=null)
+                {
+                    workSpace = tempWorkSpace;
+
+                    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                    config.AppSettings.Settings["LastWorkSpace"].Value = filePath;
+                }
+            }
         }
 
         private void SaveWorkSpaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+        
+        private bool InitLastWorkSpace()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            string filedir = config.AppSettings.Settings["LastWorkSpace"].Value;
+
+            if(string.IsNullOrEmpty(filedir))
+            {
+                workSpace = null;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private void drawSwitchCtrlUI()
