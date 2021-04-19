@@ -1,6 +1,7 @@
 ﻿using KGLCtrlApp.entity;
 using KGLCtrlApp.userControler;
 using KGLCtrlApp.utils;
+using LibKGL3U24;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,12 +19,14 @@ namespace KGLCtrlApp
     {
         private List<SwitchCtrl> switchCtrls;
         private WorkSpace workSpace;
+        private KGL3U24 kGL3U24;
         public MainWindow()
         {
             InitializeComponent();
             switchCtrls = new List<SwitchCtrl>();
             InitLastWorkSpace();
             drawSwitchCtrlUI();
+            kGL3U24 = new KGL3U24();
         }
 
         private void LoadWorkSpaceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -80,7 +83,7 @@ namespace KGLCtrlApp
         {
             for (int i = 0; i < 16; i++)
             {
-                SwitchCtrl tempSwitchCtrl = new SwitchCtrl(i + 1, $"通道{i + 1}");
+                SwitchCtrl tempSwitchCtrl = new SwitchCtrl(i + 1, $"通道{i + 1}", kGL3U24);
                 SwitchtableLayoutPanel.Controls.Add(tempSwitchCtrl, i % 4, i / 4);
 
                 tempSwitchCtrl.Dock = DockStyle.Fill;

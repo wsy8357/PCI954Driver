@@ -1,4 +1,5 @@
 ﻿using KGLCtrlApp.utils;
+using LibKGL3U24;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,15 +15,17 @@ namespace KGLCtrlApp.userControler
     public partial class SwitchCtrl : UserControl
     {
         private int channelNo;
+        private readonly KGL3U24 kGL3U24;
 
         public SwitchCtrl()
         {
             InitializeComponent();
         }
 
-        public SwitchCtrl(int channelNo, string channelName):this()
+        public SwitchCtrl(int channelNo, string channelName, KGL3U24 kGL3U24):this()
         {
             this.channelNo = channelNo;
+            this.kGL3U24 = kGL3U24;
             channleNameLabel.Text = channelName;
         }
 

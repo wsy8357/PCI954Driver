@@ -125,6 +125,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LibKGL3U24\LibKGL3U24.csproj">
+      <Project>{8866cda7-04d9-445d-9687-5723c6ccb2e7}</Project>
+      <Name>LibKGL3U24</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
