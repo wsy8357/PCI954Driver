@@ -44,5 +44,11 @@
     <Compile Include="KGL3U24.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DllKGL3U24\DllKGL3U24.vcxproj">
+      <Project>{9a7c8736-a95f-4368-8044-50ccd5cc814a}</Project>
+      <Name>DllKGL3U24</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

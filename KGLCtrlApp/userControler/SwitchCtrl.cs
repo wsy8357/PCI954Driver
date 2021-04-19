@@ -46,7 +46,19 @@ namespace KGLCtrlApp.userControler
                 stringBuilder.Append("关闭");
             }
             stringBuilder.Append(channleNameLabel.Text);
-            LoggerService.logger.Info(stringBuilder.ToString());
+
+
+            if (kGL3U24.CtrlOutputChannel(channelNo, statusSwitch.Checked))
+            {
+                stringBuilder.Append("成功!");
+                LoggerService.logger.Info(stringBuilder.ToString());
+            }
+            else
+            {
+                statusSwitch.Checked = !statusSwitch.Checked;
+                stringBuilder.Append("失败!");
+                LoggerService.logger.Info(stringBuilder.ToString());
+            }
         }
     }
 }

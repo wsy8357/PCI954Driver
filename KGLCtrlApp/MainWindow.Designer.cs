@@ -60,7 +60,7 @@ namespace KGLCtrlApp
             // 文件ToolStripMenuItem
             // 
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
-            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(62, 30);
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(62, 28);
             this.文件ToolStripMenuItem.Text = "文件";
             // 
             // WorkSpaceToolStripMenuItem
@@ -69,7 +69,7 @@ namespace KGLCtrlApp
             this.LoadWorkSpaceToolStripMenuItem,
             this.SaveWorkSpaceToolStripMenuItem});
             this.WorkSpaceToolStripMenuItem.Name = "WorkSpaceToolStripMenuItem";
-            this.WorkSpaceToolStripMenuItem.Size = new System.Drawing.Size(80, 30);
+            this.WorkSpaceToolStripMenuItem.Size = new System.Drawing.Size(80, 28);
             this.WorkSpaceToolStripMenuItem.Text = "工作区";
             // 
             // LoadWorkSpaceToolStripMenuItem
@@ -89,7 +89,7 @@ namespace KGLCtrlApp
             // 帮助ToolStripMenuItem
             // 
             this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(62, 30);
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(62, 28);
             this.帮助ToolStripMenuItem.Text = "帮助";
             // 
             // SwitchtableLayoutPanel
@@ -146,6 +146,7 @@ namespace KGLCtrlApp
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Text = "开关量控制台";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Shown += new System.EventHandler(this.MainWindow_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

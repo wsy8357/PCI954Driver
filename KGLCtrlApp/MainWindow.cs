@@ -97,6 +97,23 @@ namespace KGLCtrlApp
         {
             LoggerService.IniterLogService();
             LoggerService.logger.Info("启动开关量控制软件");
+
+            if(kGL3U24.OpenDevice())
+            {
+                LoggerService.logger.Info("3U24 开关量板卡启动成功");
+            }
+            else
+            {
+                LoggerService.logger.Error("3U24 开关量板卡驱动失败");
+            }
+        }
+
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (kGL3U24!=null)
+            {
+                kGL3U24.CloseDevice();
+            }
         }
     }
 }
