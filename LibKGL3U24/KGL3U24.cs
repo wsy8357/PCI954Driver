@@ -102,7 +102,7 @@ namespace LibKGL3U24
                 OutputReg &= (ushort)(~channels);
             }
 
-            return KglOutputSet(tempOutput);
+            return KglOutputSet(OutputReg);
         }
 
         /// <summary>
